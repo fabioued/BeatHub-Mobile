@@ -43,7 +43,8 @@ class HomeScreen extends React.Component {
       return (
         <TouchableOpacity
           key={idx}
-          style={styles.albumItem}>
+          style={styles.albumItem}
+          onPress={() => this.props.changeTab('album', album, 'push')}>
           <Image
             style={styles.albumImage}
             source={{uri: album.image_url}}
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     textAlign: "center",
-    marginTop: 40
+    marginTop: 50
   },
   albumItem: {
     padding: 10
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   },
   header: {
     position: "absolute",
-    top: 10,
+    top: 20,
     left: 0,
     right: 0
   }

@@ -45,7 +45,7 @@ class AlbumScreen extends React.Component {
   }
 
   goBack(){
-    this.props.changeSearchTab(null, null, 'pop')
+    this.props.changeTab(null, null, 'pop')
   }
 
   renderSongs(album){

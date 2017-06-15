@@ -49,7 +49,7 @@ class ArtistScreen extends React.Component {
   }
 
   goBack(){
-    this.props.changeSearchTab(null, null, 'pop')
+    this.props.changeTab(null, null, 'pop')
   }
 
   imageLoaded(){
@@ -120,7 +120,7 @@ class ArtistScreen extends React.Component {
         <TouchableOpacity
           key={idx}
           style={styles.albumItem}
-          onPress={() => this.props.changeSearchTab('album', album, 'push')}>
+          onPress={() => this.props.changeTab('album', album, 'push')}>
           <Image
             style={styles.albumImage}
             source={{uri: album.image_url}}

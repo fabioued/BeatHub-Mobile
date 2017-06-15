@@ -98,9 +98,11 @@ class UserHomeScreen extends React.Component {
 
     LayoutAnimation.configureNext(CustomAnimation)
     if (this.state.songScreenShow){
-      this.setState({songScreenShow: false, currentSongStatus: {displaySongInfo: false}})
+      let currentSongStatus = Object.assign({}, this.state.currentSongStatus, { displaySongInfo: false } )
+      this.setState({songScreenShow: false, currentSongStatus: currentSongStatus})
     } else {
-      this.setState({songScreenShow: true, currentSongStatus: {displaySongInfo: true}})
+      let currentSongStatus = Object.assign({}, this.state.currentSongStatus, { displaySongInfo: true } )
+      this.setState({songScreenShow: true, currentSongStatus: currentSongStatus})
     }
   }
 

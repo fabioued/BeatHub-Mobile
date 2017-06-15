@@ -58,7 +58,7 @@ class SearchScreen extends React.Component {
         <TouchableOpacity
           key={idx}
           style={styles.artistItem}
-          onPress={() => this.props.changeSearchTab('artist', artist, 'push')}>
+          onPress={() => this.props.changeTab('artist', artist, 'push')}>
           <View style={styles.artistInfo}>
             <Image
               style={styles.artistImage}

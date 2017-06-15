@@ -20,19 +20,21 @@ class TabBar extends React.Component {
     super()
       this.state = {
         selectedTab: 'tabOne',
-        searchTab: 'search',
-        searchProps: null,
-        navStack: [ {searchTab: 'search', searchProps: null} ]
+        tab: 'home',
+        tabProps: null,
+        navStack: [ {tab: 'home', tabProps: null} ]
       }
-      this.renderSearchScreen = this.renderSearchScreen.bind(this)
-      this.changeSearchTab = this.changeSearchTab.bind(this)
+      this.renderScreen = this.renderScreen.bind(this)
+      this.changeTab = this.changeTab.bind(this)
   }
 
-  setTab(tabId){
-    this.setState({selectedTab: tabId})
+  setTab(tabId, tab){
+    let navStack = this.state.navStack;
+    navStack.push({tab: tab, tabProps: null})
+    this.setState({selectedTab: tabId, navStack: navStack, tab: tab})
   }
 
-  changeSearchTab(searchTab, searchProps, action){
+  changeTab(tab, tabProps, action){
     var CustomAnimation = {
       duration: 400,
       create: {
@@ -49,44 +51,49 @@ class TabBar extends React.Component {
     LayoutAnimation.configureNext(CustomAnimation)
     let navStack = this.state.navStack.slice()
     if (action === 'push'){
-      navStack.push({searchTab: searchTab, searchProps: searchProps})
+      navStack.push({tab: tab, tabProps: tabProps})
       this.setState({
-        searchTab: searchTab,
-        searchProps: searchProps,
+        tab: tab,
+        tabProps: tabProps,
         navStack: navStack
       })
     } else if ( action === 'pop'){
       navStack.pop()
       let previous = navStack[navStack.length - 1]
       this.setState({
-        searchTab: previous.searchTab,
-        searchProps: previous.searchProps,
+        tab: previous.tab,
+        tabProps: previous.tabProps,
         navStack: navStack
       })
     }
   }
 
 
-  renderSearchScreen(){
-    if (this.state.searchTab === 'search'){
+  renderScreen(){
+    if (this.state.tab === 'search'){
       return (
         <SearchScreen
-          navigation={this.props.navigation} changeSearchTab={this.changeSearchTab}/>
+          navigation={this.props.navigation} changeTab={this.changeTab}/>
       )
-    } else if (this.state.searchTab === 'artist'){
+    } else if (this.state.tab === 'home'){
+      return (
+        <HomeScreen
+          navigation={this.props.navigation} changeTab={this.changeTab}/>
+      )
+    } else if (this.state.tab === 'artist'){
       return (
         <ArtistScreen
-          artist={this.state.searchProps}
+          artist={this.state.tabProps}
           navStack={this.state.navStack}
-          changeSearchTab={this.changeSearchTab}
+          changeTab={this.changeTab}
           />
       )
-    } else if (this.state.searchTab === 'album'){
+    } else if (this.state.tab === 'album'){
       return (
         <AlbumScreen
-          album={this.state.searchProps}
+          album={this.state.tabProps}
           navStack={this.state.navStack}
-          changeSearchTab={this.changeSearchTab}
+          changeTab={this.changeTab}
           _setAudioBar={this.props._setAudioBar}
           />
       )
@@ -95,7 +102,7 @@ class TabBar extends React.Component {
 
   render() {
 
-    let searchScreen = this.renderSearchScreen()
+    let screen = this.renderScreen()
 
     return (
 
@@ -109,10 +116,8 @@ class TabBar extends React.Component {
           iconSize={35}
           selectedIconName="home"
           selected={this.state.selectedTab === "tabOne"}
-          onPress={() => this.setTab("tabOne")}>
-            <View>
-              <HomeScreen/>
-            </View>
+          onPress={() => this.setTab("tabOne", "home")}>
+              {screen}
         </FoundationIcon.TabBarItemIOS>
 
         <MaterialIcon.TabBarItemIOS
@@ -121,7 +126,7 @@ class TabBar extends React.Component {
           iconSize={35}
           selectedIconName="queue-music"
           selected={this.state.selectedTab === "tabTwo"}
-          onPress={() => this.setTab("tabTwo")}>
+          onPress={() => this.setTab("tabTwo", "browse")}>
             <View>
               <Text>Browse Screen</Text>
             </View>
@@ -130,8 +135,8 @@ class TabBar extends React.Component {
         <TabBarIOS.Item
           systemIcon="search"
           selected={this.state.selectedTab === "tabThree"}
-          onPress={() => this.setTab("tabThree")}>
-          {searchScreen}
+          onPress={() => this.setTab("tabThree", "search")}>
+          {screen}
         </TabBarIOS.Item>
 
         <MaterialIcon.TabBarItemIOS
@@ -140,7 +145,7 @@ class TabBar extends React.Component {
           iconSize={35}
           selectedIconName="radio"
           selected={this.state.selectedTab === "tabFour"}
-          onPress={() => this.setTab("tabFour")}>
+          onPress={() => this.setTab("tabFour", "radio")}>
             <View>
               <Text>Radio Screen</Text>
             </View>
@@ -152,7 +157,7 @@ class TabBar extends React.Component {
           iconSize={35}
           selectedIconName="book"
           selected={this.state.selectedTab === "tabFive"}
-          onPress={() => this.setTab("tabFive")}>
+          onPress={() => this.setTab("tabFive", "library")}>
           <View>
             <Text>Library Screen</Text>
           </View>
