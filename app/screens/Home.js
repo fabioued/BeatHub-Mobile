@@ -49,7 +49,12 @@ class HomeScreen extends React.Component {
             style={styles.albumImage}
             source={{uri: album.image_url}}
             />
-          <Text style={styles.albumName}>{album.name}</Text>
+          <Text
+            style={styles.albumName}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {album.name}
+          </Text>
         </TouchableOpacity>
       )
     })
@@ -93,7 +98,10 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   albumItem: {
-    padding: 10
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+    maxWidth: 150
   },
   albumImage: {
     width: 150,

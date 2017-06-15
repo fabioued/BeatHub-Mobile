@@ -125,7 +125,12 @@ class ArtistScreen extends React.Component {
             style={styles.albumImage}
             source={{uri: album.image_url}}
             />
-          <Text style={styles.albumName}>{album.name}</Text>
+          <Text
+            style={styles.albumName}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {album.name}
+          </Text>
         </TouchableOpacity>
       )
     })
@@ -263,7 +268,9 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica"
   },
   albumItem: {
-    padding: 10
+    marginLeft: 10,
+    marginRight: 10,
+    maxWidth: 150
   }
 })
 

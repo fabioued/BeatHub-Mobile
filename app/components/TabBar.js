@@ -13,6 +13,8 @@ import SearchScreen from '../screens/Search'
 import HomeScreen from '../screens/Home'
 import ArtistScreen from '../screens/ArtistScreen'
 import AlbumScreen from '../screens/AlbumScreen'
+import BrowseScreen from '../screens/Browse'
+import CollectionScreen from '../screens/Collection'
 
 
 class TabBar extends React.Component {
@@ -78,7 +80,14 @@ class TabBar extends React.Component {
     } else if (this.state.tab === 'home'){
       return (
         <HomeScreen
-          navigation={this.props.navigation} changeTab={this.changeTab}/>
+          navigation={this.props.navigation}
+          changeTab={this.changeTab}/>
+      )
+    } else if (this.state.tab === 'browse'){
+      return (
+        <BrowseScreen
+          navigation={this.props.navigation}
+          changeTab={this.changeTab}/>
       )
     } else if (this.state.tab === 'artist'){
       return (
@@ -95,6 +104,14 @@ class TabBar extends React.Component {
           navStack={this.state.navStack}
           changeTab={this.changeTab}
           _setAudioBar={this.props._setAudioBar}
+          />
+      )
+    } else if (this.state.tab === 'collection'){
+      return (
+        <CollectionScreen
+          collection={this.state.tabProps}
+          navStack={this.state.navStack}
+          changeTab={this.changeTab}
           />
       )
     }
@@ -117,7 +134,7 @@ class TabBar extends React.Component {
           selectedIconName="home"
           selected={this.state.selectedTab === "tabOne"}
           onPress={() => this.setTab("tabOne", "home")}>
-              {screen}
+            {screen}
         </FoundationIcon.TabBarItemIOS>
 
         <MaterialIcon.TabBarItemIOS
@@ -127,9 +144,7 @@ class TabBar extends React.Component {
           selectedIconName="queue-music"
           selected={this.state.selectedTab === "tabTwo"}
           onPress={() => this.setTab("tabTwo", "browse")}>
-            <View>
-              <Text>Browse Screen</Text>
-            </View>
+            {screen}
         </MaterialIcon.TabBarItemIOS>
 
         <TabBarIOS.Item
