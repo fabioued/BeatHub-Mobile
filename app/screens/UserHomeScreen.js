@@ -6,12 +6,14 @@ import {
   TabBarIOS,
   StyleSheet,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  LayoutAnimation
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import TabBar from '../components/TabBar';
 import AudioLine from '../components/AudioLine';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SongScreen from './SongScreen';
 
 
 class UserHomeScreen extends React.Component {
@@ -21,9 +23,11 @@ class UserHomeScreen extends React.Component {
       audioBarOn: false,
       currentUser: this.props.currentUser,
       currentSong: null, queue: [],
-      currentSongStatus: {paused: false}
+      currentSongStatus: {paused: false, displaySongInfo: false},
+      songScreenShow: false
     }
     this._pause = this._pause.bind(this);
+    this._renderSongScreen = this._renderSongScreen.bind(this);
   }
   static navigationOptions = ({ navigation }) => ({
     header: null
@@ -34,25 +38,29 @@ class UserHomeScreen extends React.Component {
   }
 
   _renderAudioBar(){
-    let audioPlayIcon = this.state.currentSongStatus.paused ? "play-circle" : "pause-circle"
+    let audioPlayIcon = this.state.currentSongStatus.paused ? "play-circle" : "pause-circle";
+    let btnOpacity = this.state.currentSongStatus.displaySongInfo ? 0 : 1
     return(
       <View style={styles.audioBar}>
 
         <AudioLine
           currentSong={this.state.currentSong}
-          currentSongStatus={this.state.currentSongStatus}/>
+          currentSongStatus={this.state.currentSongStatus}
+          _pause={this._pause}/>
 
-        <View style={styles.audioBarTextContainer}>
-          <Text style={styles.audioBarText}>
-            {this.state.currentSong.name}
+        <TouchableOpacity
+          style={styles.audioBarTextContainer}
+          onPress={() => this._renderSongScreen()}>
+          <Text style={styles.audioBarText} ellipsizeMode="tail">
+            {this.state.currentSong.name}{`      `}
           </Text>
           <Icon
             name="circle"
             style={styles.icon}/>
-          <Text style={styles.audioBarTextArtist}>
-            {this.state.currentSong.artist.name}
+          <Text style={styles.audioBarTextArtist} ellipsizeMode="tail">
+            {`   `}{this.state.currentSong.artist.name}
           </Text>
-        </View>
+        </TouchableOpacity>
 
 
       <TouchableOpacity
@@ -60,7 +68,7 @@ class UserHomeScreen extends React.Component {
         onPress={() => this._pause()}>
         <Icon
           name={audioPlayIcon}
-          style={styles.pauseIcon}/>
+          style={{opacity: btnOpacity, color: "white", fontSize: 20}}/>
       </TouchableOpacity>
       </View>
     )
@@ -68,15 +76,43 @@ class UserHomeScreen extends React.Component {
 
   _pause(){
     if (this.state.currentSongStatus.paused){
-      this.setState({currentSongStatus: {paused: false}})
+      this.setState({currentSongStatus: {paused: false, displaySongInfo: this.state.currentSongStatus.displaySongInfo}})
     } else {
-      this.setState({currentSongStatus: {paused: true}})
+      this.setState({currentSongStatus: {paused: true, displaySongInfo: this.state.currentSongStatus.displaySongInfo}})
+    }
+  }
+
+  _renderSongScreen(){
+    var CustomAnimation = {
+      duration: 400,
+      create: {
+        type: LayoutAnimation.Types.fade,
+        property: LayoutAnimation.Properties.scaleXY,
+        springDamping: 0.7
+      },
+      update: {
+        type: LayoutAnimation.Types.fade,
+        springDamping: 0.7
+      }
+    }
+
+    LayoutAnimation.configureNext(CustomAnimation)
+    if (this.state.songScreenShow){
+      this.setState({songScreenShow: false, currentSongStatus: {displaySongInfo: false}})
+    } else {
+      this.setState({songScreenShow: true, currentSongStatus: {displaySongInfo: true}})
     }
   }
 
   render() {
     const { params } = this.props.navigation.state
     let audioBar = this.state.audioBarOn ? this._renderAudioBar() : null
+    let songScreen = this.state.songScreenShow ?
+      <SongScreen
+        song={this.state.currentSong}
+        _renderSongScreen={this._renderSongScreen}/>
+      : null
+
 
     return (
       <View style={styles.viewContainer}>
@@ -89,7 +125,7 @@ class UserHomeScreen extends React.Component {
           _setAudioBar={this._setAudioBar.bind(this)}
           navigation={this.props.navigation}
         />
-
+      {songScreen}
       {audioBar}
 
       </View>
@@ -122,14 +158,14 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: 'gray',
-    fontSize: 10,
+    fontSize: 5,
   },
   audioBarTextContainer: {
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    width: 200,
-    alignSelf: "center"
+    alignSelf: "center",
+    marginBottom: 2
   },
   pauseIcon: {
     color: "white",

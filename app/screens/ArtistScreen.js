@@ -9,7 +9,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  findNodeHandle
+  findNodeHandle,
+  ActivityIndicator
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -53,6 +54,16 @@ class ArtistScreen extends React.Component {
 
   imageLoaded(){
     this.setState({viewRef: findNodeHandle(this.backgroundImage)});
+  }
+
+  _renderLoading(){
+    return (
+      <ActivityIndicator
+        animating={this.state.animating}
+        style={{height: 80}}
+        size="large"
+        />
+    )
   }
 
   handleScroll(e){
@@ -131,7 +142,7 @@ class ArtistScreen extends React.Component {
     let navStack = this.props.navStack;
     let previous = navStack[navStack.length - 1]
     let thumb = this.state.showThumb ? this.renderThumb(artist) : null
-    let albums = this.state.albums ? this.renderAlbums(artist) : null
+    let albums = this.state.albums ? this.renderAlbums(artist) : this._renderLoading()
 
     return (
       <ScrollView
@@ -242,6 +253,7 @@ const styles = StyleSheet.create({
   albumsContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     padding: 15,
     flexWrap: "wrap"
   },

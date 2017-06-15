@@ -99,7 +99,9 @@ class TabBar extends React.Component {
 
     return (
 
-      <TabBarIOS>
+      <TabBarIOS
+        barTintColor="#383838"
+        tintColor="#07d159">
 
         <FoundationIcon.TabBarItemIOS
           title="Home"
