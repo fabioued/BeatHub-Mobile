@@ -111,8 +111,7 @@ class TabBar extends React.Component {
           selected={this.state.selectedTab === "tabOne"}
           onPress={() => this.setTab("tabOne")}>
             <View>
-              <HomeScreen
-                _setAudioBar={this.props._setAudioBar}/>
+              <HomeScreen/>
             </View>
         </FoundationIcon.TabBarItemIOS>
 
