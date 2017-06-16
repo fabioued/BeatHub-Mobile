@@ -94,12 +94,12 @@ class UserHomeScreen extends React.Component {
     var CustomAnimation = {
       duration: 400,
       create: {
-        type: LayoutAnimation.Types.fade,
+        type: LayoutAnimation.Types.spring,
         property: LayoutAnimation.Properties.scaleXY,
         springDamping: 0.7
       },
       update: {
-        type: LayoutAnimation.Types.fade,
+        type: LayoutAnimation.Types.spring,
         springDamping: 0.7
       }
     }

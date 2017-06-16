@@ -16,6 +16,7 @@ import AlbumScreen from '../screens/AlbumScreen'
 import BrowseScreen from '../screens/Browse'
 import CollectionScreen from '../screens/Collection'
 import RadioScreen from '../screens/Radio'
+import LibraryScreen from '../screens/Library'
 
 
 class TabBar extends React.Component {
@@ -77,7 +78,10 @@ class TabBar extends React.Component {
     if (this.state.tab === 'search'){
       return (
         <SearchScreen
-          navigation={this.props.navigation} changeTab={this.changeTab}/>
+          navigation={this.props.navigation}
+          changeTab={this.changeTab}
+          _setAudioBar={this.props._setAudioBar}
+          />
       )
     } else if (this.state.tab === 'home'){
       return (
@@ -99,6 +103,12 @@ class TabBar extends React.Component {
           changeTab={this.changeTab}
           _playRadio={this.props._playRadio}
           fetchingSongs={this.props.fetchingSongs}/>
+      )
+    } else if (this.state.tab === 'library'){
+      return (
+        <LibraryScreen
+          navigation={this.props.navigation}
+          changeTab={this.changeTab}/>
       )
     } else if (this.state.tab === 'artist'){
       return (
@@ -188,9 +198,7 @@ class TabBar extends React.Component {
           selectedIconName="book"
           selected={this.state.selectedTab === "tabFive"}
           onPress={() => this.setTab("tabFive", "library")}>
-          <View>
-            <Text>Library Screen</Text>
-          </View>
+          {screen}
         </FoundationIcon.TabBarItemIOS>
 
 

@@ -88,7 +88,10 @@ class SearchScreen extends React.Component {
     let albums = this.state.searchResults.albums.map((album, idx) => {
 
       return(
-        <TouchableOpacity key={idx} style={styles.artistItem}>
+        <TouchableOpacity
+          key={idx}
+          style={styles.artistItem}
+          onPress={() => this.props.changeTab('album', album, 'push')}>
           <View style={styles.artistInfo}>
             <Image
               style={styles.artistImage}
@@ -114,6 +117,41 @@ class SearchScreen extends React.Component {
     )
   }
 
+  _renderSongs(){
+    let songs = this.state.searchResults.songs.map((song, idx) => {
+      song.image_url = song.album.image_url
+      return(
+        <TouchableOpacity
+          key={idx}
+          style={styles.artistItem}
+          onPress={() => this.props._setAudioBar(song)}>
+          <View style={styles.artistInfo}>
+            <Icon
+              name="music"
+              size={20}
+              style={styles.itemIcon}
+            />
+            <Text style={styles.artistText}>{song.name}</Text>
+            <Text style={styles.songArtistText}>{song.artist.name}</Text>
+          </View>
+
+          <Icon
+            name="chevron-right"
+            size={10}
+            style={styles.itemIcon}
+          />
+      </TouchableOpacity>
+      )
+    })
+
+    return(
+        <View style={styles.artistContainer}>
+          <Text style={styles.resultTitle}>Songs</Text>
+          {songs}
+        </View>
+    )
+  }
+
   _renderLoading(){
     return (
       <ActivityIndicator
@@ -127,8 +165,10 @@ class SearchScreen extends React.Component {
   render() {
     let artists = this.state.searchResults.artists;
     let albums = this.state.searchResults.albums;
+    let songs = this.state.searchResults.songs;
     artistsView = artists.length ? this._renderArtists() : null
     albumsView = albums.length ? this._renderAlbums() : null
+    songsView = songs.length ? this._renderSongs() : null
     let spinner = this._renderLoading()
 
     console.log(artistsView)
@@ -150,6 +190,7 @@ class SearchScreen extends React.Component {
         <ScrollView style={styles.resultsContainer}>
           {artistsView}
           {albumsView}
+          {songsView}
           {spinner}
         </ScrollView>
 
@@ -227,6 +268,11 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     marginTop: 50
+  },
+  songArtistText: {
+    color: "gray",
+    fontFamily: "Helvetica",
+    marginLeft: 16
   }
 })
 

@@ -33,6 +33,7 @@ class CollectionScreen extends React.Component {
     let items = this.props.collection.items.map((item, idx) => {
       return (
         <TouchableOpacity
+          key={idx}
           style={styles.collectionItem}
           onPress={() => this.props.changeTab('artist', item, 'push')}>
           <Image

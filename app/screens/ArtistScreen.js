@@ -22,7 +22,7 @@ class ArtistScreen extends React.Component {
     super(props)
     this.state = {
       viewRef: null,
-      blurAmount: 8,
+      blurAmount: 4,
       scrollPos: 0,
       showThumb: true,
       albums: null,
@@ -241,11 +241,12 @@ class ArtistScreen extends React.Component {
 
         <View style={styles.banner}>
           <Image
+            ref={(img) => {this.backgroundImage = img; }}
             style={styles.banner}
             source={{uri: artist.banner_url }}
             onLoadEnd={this.imageLoaded.bind(this)}
             />
-          <BlurView
+          <VibrancyView
             blurType='light'
             blurAmount={this.state.blurAmount}
             style={styles.blur}
