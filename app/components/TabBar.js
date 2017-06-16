@@ -15,6 +15,7 @@ import ArtistScreen from '../screens/ArtistScreen'
 import AlbumScreen from '../screens/AlbumScreen'
 import BrowseScreen from '../screens/Browse'
 import CollectionScreen from '../screens/Collection'
+import RadioScreen from '../screens/Radio'
 
 
 class TabBar extends React.Component {
@@ -28,6 +29,7 @@ class TabBar extends React.Component {
       }
       this.renderScreen = this.renderScreen.bind(this)
       this.changeTab = this.changeTab.bind(this)
+      this.setRadioTab = this.setRadioTab.bind(this);
   }
 
   setTab(tabId, tab){
@@ -87,7 +89,16 @@ class TabBar extends React.Component {
       return (
         <BrowseScreen
           navigation={this.props.navigation}
-          changeTab={this.changeTab}/>
+          changeTab={this.changeTab}
+          />
+      )
+    } else if (this.state.tab === 'radio'){
+      return (
+        <RadioScreen
+          navigation={this.props.navigation}
+          changeTab={this.changeTab}
+          _playRadio={this.props._playRadio}
+          fetchingSongs={this.props.fetchingSongs}/>
       )
     } else if (this.state.tab === 'artist'){
       return (
@@ -95,6 +106,7 @@ class TabBar extends React.Component {
           artist={this.state.tabProps}
           navStack={this.state.navStack}
           changeTab={this.changeTab}
+          currentUser={this.props.currentUser}
           />
       )
     } else if (this.state.tab === 'album'){
@@ -115,6 +127,11 @@ class TabBar extends React.Component {
           />
       )
     }
+  }
+
+  setRadioTab(){
+    this.setTab("tabFour", "radio");
+    this.props._playRadio()
   }
 
   render() {
@@ -160,10 +177,8 @@ class TabBar extends React.Component {
           iconSize={35}
           selectedIconName="radio"
           selected={this.state.selectedTab === "tabFour"}
-          onPress={() => this.setTab("tabFour", "radio")}>
-            <View>
-              <Text>Radio Screen</Text>
-            </View>
+          onPress={() => this.setRadioTab()}>
+          {screen}
         </MaterialIcon.TabBarItemIOS>
 
         <FoundationIcon.TabBarItemIOS

@@ -43,8 +43,10 @@ class SignupScreen extends React.Component {
     })
       .then(function(response){
         if (response.ok){
-          window.context.setState({currentUser: window.context.state.username})
-          window.context.props.navigation.navigate('UserHome', {currentUser: window.context.state.username})
+          response.json().then((responseJSON) => {
+            window.context.setState({currentUser: window.context.state.username})
+            window.context.props.navigation.navigate('UserHome', {currentUser: responseJSON})
+          })
         } else {
           window.context.setState({errors: "Please fill in all fields"})
         }

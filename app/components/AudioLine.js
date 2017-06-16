@@ -32,6 +32,7 @@ class AudioLine extends React.Component {
     this.getCurrentPosition = this.getCurrentPosition.bind(this);
     this.renderSongTimes = this.renderSongTimes.bind(this);
     this.renderSongControls = this.renderSongControls.bind(this);
+    this.onEnd = this.onEnd.bind(this);
   }
 
   componentWillReceiveProps(newProps){
@@ -48,6 +49,10 @@ class AudioLine extends React.Component {
 
   onBuffer({isBuffering}: {isBuffering: boolean}){
     this.setState({ isBuffering });
+  }
+
+  onEnd(){
+    this.props._playNextSong()
   }
 
   getCurrentTimePercentage(){
@@ -86,7 +91,8 @@ class AudioLine extends React.Component {
     let playBtn = this.state.paused ? "play-circle-o" : "pause-circle-o"
     return (
       <View style={styles.songControlsContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props._playPreviousSong()}>
           <Icon
             name="step-backward"
             style={styles.controlBtn}/>
@@ -99,7 +105,8 @@ class AudioLine extends React.Component {
             style={styles.playBtn}/>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props._playNextSong()}>
           <Icon
             name="step-forward"
             style={styles.controlBtn}/>
@@ -114,8 +121,6 @@ class AudioLine extends React.Component {
     if (num > 59){
       min = Math.floor(num / 60);
       sec = Math.floor(num - (min * 60))
-      console.log(min)
-      console.log(sec)
     } else {
       min = 0
       sec = Math.floor(num)

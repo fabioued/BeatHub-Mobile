@@ -20,13 +20,24 @@ import { BlurView, VibrancyView } from 'react-native-blur';
 class ArtistScreen extends React.Component {
   constructor(props){
     super(props)
-    this.state = {viewRef: null, blurAmount: 8, scrollPos: 0, showThumb: true, albums: null}
+    this.state = {
+      viewRef: null,
+      blurAmount: 8,
+      scrollPos: 0,
+      showThumb: true,
+      albums: null,
+      followed: false
+    }
     this.goBack = this.goBack.bind(this)
     this.handleScroll = this.handleScroll.bind(this);
     this.reBlur = this.reBlur.bind(this);
     this.renderThumb = this.renderThumb.bind(this);
     this.renderAlbums = this.renderAlbums.bind(this);
     this.fetchArtistAlbums = this.fetchArtistAlbums.bind(this);
+    this.checkFollow = this.checkFollow.bind(this);
+    this.follow = this.follow.bind(this);
+    this.unfollow = this.unfollow.bind(this);
+    this.toggleFollow = this.toggleFollow.bind(this);
   }
 
   static navigationOptions = {
@@ -34,6 +45,7 @@ class ArtistScreen extends React.Component {
 
   componentWillMount(){
     this.fetchArtistAlbums()
+    this.checkFollow()
   }
 
   fetchArtistAlbums(){
@@ -100,6 +112,7 @@ class ArtistScreen extends React.Component {
   }
 
   renderThumb(artist){
+    let followText = this.state.followed ? "UNFOLLOW" : "FOLLOW"
     return (
       <View style={styles.titleContainer}>
         <View style={styles.thumb}>
@@ -109,6 +122,11 @@ class ArtistScreen extends React.Component {
             />
         </View>
         <Text style={styles.title}>{artist.name}</Text>
+        <TouchableOpacity
+          style={styles.followBtn}
+          onPress={() => this.toggleFollow()}>
+          <Text style={styles.followText}>{followText}</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -140,6 +158,63 @@ class ArtistScreen extends React.Component {
         {albums}
       </View>
     )
+  }
+
+  checkFollow(){
+    return fetch(`http://www.beathub.us/api/follows/artists/${this.props.artist.id}/${this.props.currentUser.id}`, {
+      method: 'GET'
+    })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        console.log(responseJSON)
+        this.setState({followed: responseJSON.follows})
+      }).catch(function(error){
+        console.log(`Got an error: ${error}`)
+      })
+  }
+
+  follow(){
+    let follow = {follower_id: this.props.currentUser.id, followable_id: this.props.artist.id, followable_type: 'Artist'}
+    fetch(`http://www.beathub.us/api/follows`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(follow)
+    })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        this.setState({followed: true})
+      }).catch(function(error){
+        console.log(`Got an error: ${error}`)
+      })
+  }
+
+  unfollow(){
+    let follow = {follower_id: this.props.currentUser.id, followable_id: this.props.artist.id, followable_type: 'Artist'}
+    fetch(`http://www.beathub.us/api/follows/${this.props.artist.id}`, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(follow)
+    })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        this.setState({followed: false})
+      }).catch(function(error){
+        console.log(`Got an error: ${error}`)
+      })
+  }
+
+  toggleFollow(){
+    if (this.state.followed){
+      this.unfollow()
+    } else {
+      this.follow()
+    }
   }
 
   render() {
@@ -271,6 +346,22 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     maxWidth: 150
+  },
+  followBtn: {
+    width: 80,
+    height: 20,
+    borderRadius: 20,
+    position: "absolute",
+    top: 150,
+    alignSelf: "center",
+    backgroundColor: 'transparent',
+    borderColor: "silver",
+    borderWidth: 2
+  },
+  followText: {
+    color: 'white',
+    textAlign: "center",
+    fontSize: 12
   }
 })
 

@@ -39,7 +39,11 @@ class SongScreen extends React.Component {
           source={{uri: this.props.song.image_url}}
           />
         <Text style={styles.songName}>{song.name}</Text>
-        <Text style={styles.artistName}>{song.artist.name}</Text>
+        <Text
+          style={styles.artistName}
+          onPress={() => console.log("name pressed")}>
+          {song.artist.name}
+        </Text>
 
       </View>
     );

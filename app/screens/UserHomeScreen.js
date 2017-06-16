@@ -21,13 +21,18 @@ class UserHomeScreen extends React.Component {
     super(props)
     this.state = {
       audioBarOn: false,
-      currentUser: this.props.currentUser,
-      currentSong: null, queue: [],
+      currentUser: this.props.navigation.state.params.currentUser,
+      currentSong: null, queue: [], playedStack: [],
       currentSongStatus: {paused: false, displaySongInfo: false},
-      songScreenShow: false
+      songScreenShow: false,
+      fetchingSongs: false
     }
     this._pause = this._pause.bind(this);
     this._renderSongScreen = this._renderSongScreen.bind(this);
+    this._playRadio = this._playRadio.bind(this);
+    this._playNextSong = this._playNextSong.bind(this);
+    this._playPreviousSong = this._playPreviousSong.bind(this);
+    this._setAudioBar = this._setAudioBar.bind(this);
   }
   static navigationOptions = ({ navigation }) => ({
     header: null
@@ -46,7 +51,10 @@ class UserHomeScreen extends React.Component {
         <AudioLine
           currentSong={this.state.currentSong}
           currentSongStatus={this.state.currentSongStatus}
-          _pause={this._pause}/>
+          _pause={this._pause}
+          _playNextSong={this._playNextSong}
+          _playPreviousSong={this._playPreviousSong}
+          />
 
         <TouchableOpacity
           style={styles.audioBarTextContainer}
@@ -106,6 +114,41 @@ class UserHomeScreen extends React.Component {
     }
   }
 
+  _playRadio(){
+    this.setState({fetchingSongs: true}, () =>
+      fetch(`http://www.beathub.us/api/radio`, {
+        method: "GET"
+      })
+      .then((response) =>
+        response.json())
+      .then((responseJSON) => {
+        console.log(responseJSON)
+        this.setState({queue: responseJSON, fetchingSongs: false}, this._setAudioBar(responseJSON[0]))
+      }).catch(function(error){
+        console.log(`Got an error: ${error}`)
+      })
+    )
+  }
+
+  _playNextSong(){
+    let currentQueue = this.state.queue;
+    let playedStack = this.state.playedStack;
+
+    if (currentQueue.length > 1){
+      let lastSong = currentQueue.shift();
+      playedStack.push(lastSong);
+      this.setState({currentSong: currentQueue[0], playedStack: playedStack, queue: currentQueue})
+    }
+  }
+
+  _playPreviousSong(){
+    let playedStack = this.state.playedStack;
+    if (playedStack.length){
+      let previousSong = playedStack[playedStack.length - 1]
+      this.setState({currentSong: previousSong})
+    }
+  }
+
   render() {
     const { params } = this.props.navigation.state
     let audioBar = this.state.audioBarOn ? this._renderAudioBar() : null
@@ -124,8 +167,11 @@ class UserHomeScreen extends React.Component {
 
         <TabBar
           style={styles.tabBar}
-          _setAudioBar={this._setAudioBar.bind(this)}
+          _setAudioBar={this._setAudioBar}
           navigation={this.props.navigation}
+          _playRadio={this._playRadio}
+          fetchingSongs={this.state.fetchingSongs}
+          currentUser={this.state.currentUser}
         />
       {songScreen}
       {audioBar}

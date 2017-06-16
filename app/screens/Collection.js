@@ -18,11 +18,16 @@ class CollectionScreen extends React.Component {
   constructor(props){
     super(props)
     this.renderCollection = this.renderCollection.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
   static navigationOptions = {
     header: null
   };
+
+  goBack(){
+    this.props.changeTab(null, null, 'pop')
+  }
 
   renderCollection(){
     let items = this.props.collection.items.map((item, idx) => {
@@ -51,6 +56,18 @@ class CollectionScreen extends React.Component {
     let items = this.props.collection.items.length ? this.renderCollection() : null;
     return (
       <ScrollView>
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => this.goBack()}>
+          <Icon
+            name="chevron-left"
+            size={20}
+            style={styles.itemIcon}
+          />
+
+        </TouchableOpacity>
+
         <View style={styles.header}>
           <Text style={styles.title}>{criteria}</Text>
         </View>
@@ -105,6 +122,17 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75
+  },
+  itemIcon: {
+    color: "white",
+    zIndex: 10,
+    backgroundColor: "transparent"
+  },
+  backButton :{
+    position: 'absolute',
+    top: 25,
+    left: 10,
+    zIndex: 9
   }
 })
 
