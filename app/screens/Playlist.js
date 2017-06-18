@@ -16,62 +16,93 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import TabBar from '../components/TabBar';
 import { BlurView, VibrancyView } from 'react-native-blur';
 
-class AlbumScreen extends React.Component {
+class PlaylistScreen extends React.Component {
   constructor(props){
     super(props)
     this.state = {songs: null}
-    this.fetchAlbumSongs = this.fetchAlbumSongs.bind(this);
-    this.renderSongs = this.renderSongs.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.renderSongs = this.renderSongs.bind(this);
+    this.renderThumb = this.renderThumb.bind(this);
   }
 
   static navigationOptions = {
   };
 
-  componentWillMount(){
-    this.fetchAlbumSongs()
-  }
-
-  fetchAlbumSongs(){
-    fetch(`http://www.beathub.us/api/albums/${this.props.album.id}/songs`, {
-      method: 'GET'
-    })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        this.setState({songs: responseJSON})
-      }).catch(function(error){
-        console.log(`Got an error: ${error}`)
-      })
-  }
-
   goBack(){
     this.props.changeTab(null, null, 'pop')
   }
 
-  renderSongs(album){
-    let songs = this.state.songs.map((song, idx) => {
+  renderThumb(songs){
+    if (songs.length >= 4){
+      let pic1 = songs[0].image_url;
+      let pic2 = songs[1].image_url;
+      let pic3 = songs[2].image_url;
+      let pic4 = songs[3].image_url;
+
+      return (
+        <View style={styles.thumb}>
+          <View style={styles.thumbRow}>
+            <Image
+              source={{uri: pic1}}
+              style={styles.thumbPic}
+              />
+            <Image
+              source={{uri: pic2}}
+              style={styles.thumbPic}
+              />
+          </View>
+
+          <View style={styles.thumbRow}>
+            <Image
+              source={{uri: pic3}}
+              style={styles.thumbPic}
+              />
+            <Image
+              source={{uri: pic4}}
+              style={styles.thumbPic}
+              />
+          </View>
+        </View>
+      )
+    } else {
+      let pic = songs[0].image_url;
+      return(
+        <View style={styles.thumb}>
+          <Image
+            source={{uri: pic}}
+            style={styles.fullThumbPic}
+            />
+        </View>
+      )
+    }
+  }
+
+  renderSongs(){
+    let songs = this.props.playlist.songs.map((song, idx) => {
       return (
         <TouchableOpacity
           key={idx}
           style={styles.songItem}
           onPress={() => this.props._setAudioBar(song)}>
           <Text style={styles.songText}>{song.name}</Text>
-          <Text style={styles.songArtist}>{album.artist_name}</Text>
+          <Text style={styles.songArtist}>{song.artist.name}</Text>
         </TouchableOpacity>
       )
     })
 
     return (
       <View style={styles.songsContainer}>
-      {songs}
+        {songs}
       </View>
     )
   }
 
-  render() {
-    let album = this.props.album
-    let songs = this.state.songs ? this.renderSongs(album) : null;
 
+
+  render() {
+    let playlist = this.props.playlist
+    let songs = playlist ? this.renderSongs() : null;
+    let thumb = playlist ? this.renderThumb(playlist.songs): null;
     return (
       <ScrollView style={styles.viewContainer}>
 
@@ -86,12 +117,9 @@ class AlbumScreen extends React.Component {
       </TouchableOpacity>
 
         <View style={styles.titleContainer}>
-          <Image
-            style={styles.thumb}
-            source={{uri: album.image_url}}
-            />
-          <Text style={styles.title}>{album.name}</Text>
-          <Text style={styles.albumByText}>Album by {album.artist_name}</Text>
+          {thumb}
+          <Text style={styles.title}>{playlist.name}</Text>
+          <Text style={styles.albumByText}>Playlist by {this.props.currentUser.username}</Text>
         </View>
 
         <Text style={styles.sectionTitle}>Includes</Text>
@@ -177,8 +205,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#b4b4b4",
     marginTop: 10
+  },
+  thumbPic: {
+    height: 100,
+    width: 100
+  },
+  thumbRow: {
+    width: 200,
+    height: 100,
+    flexDirection: "row"
+  },
+  fullThumbPic: {
+    width: 200,
+    height: 200
   }
 })
 
 
-export default AlbumScreen;
+export default PlaylistScreen;

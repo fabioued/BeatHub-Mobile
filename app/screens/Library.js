@@ -28,13 +28,18 @@ class LibraryScreen extends React.Component {
       <ScrollView style={styles.viewContainer}>
         <Text style={styles.title}>YOUR LIBRARY</Text>
 
-        <TouchableOpacity style={styles.musicItem}>
+        <TouchableOpacity
+          style={styles.musicItem}
+          onPress={() => this.props.changeTab('playlists', null, 'push')}>
           <Icon
             name="music"
             size={30}
             style={styles.itemIcon}
           />
-          <Text style={styles.musicText}>Playlists</Text>
+          <Text
+            style={styles.musicText}>
+            Playlists
+          </Text>
           <Icon
             name="chevron-right"
             size={20}
@@ -95,6 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   title: {
+    marginTop: 20,
     fontSize: 16,
     fontFamily: "Helvetica",
     color: "white",

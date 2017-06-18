@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -18,6 +19,7 @@ class HomeScreen extends React.Component {
     super(props)
     this.state = {featuredAlbums: null}
     this.renderFeaturedAlbums = this.renderFeaturedAlbums.bind(this);
+    this._renderLoading = this._renderLoading.bind(this);
   }
 
   static navigationOptions = {
@@ -66,9 +68,19 @@ class HomeScreen extends React.Component {
     )
   }
 
+  _renderLoading(){
+    return (
+      <ActivityIndicator
+        animating={this.state.animating}
+        style={{height: 80}}
+        size="large"
+        />
+    )
+  }
+
   render() {
     console.log(this.state.featuredAlbums)
-    let featuredAlbums = this.state.featuredAlbums ? this.renderFeaturedAlbums() : null;
+    let featuredAlbums = this.state.featuredAlbums ? this.renderFeaturedAlbums() : this._renderLoading();
 
     return (
       <ScrollView>
