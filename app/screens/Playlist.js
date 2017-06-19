@@ -23,6 +23,7 @@ class PlaylistScreen extends React.Component {
     this.goBack = this.goBack.bind(this);
     this.renderSongs = this.renderSongs.bind(this);
     this.renderThumb = this.renderThumb.bind(this);
+    this.deletePlayList = this.deletePlayList.bind(this);
   }
 
   static navigationOptions = {
@@ -64,12 +65,21 @@ class PlaylistScreen extends React.Component {
           </View>
         </View>
       )
-    } else {
+    } else if (songs.length < 4 && songs.length > 0){
       let pic = songs[0].image_url;
       return(
         <View style={styles.thumb}>
           <Image
             source={{uri: pic}}
+            style={styles.fullThumbPic}
+            />
+        </View>
+      )
+    } else {
+      return(
+        <View style={styles.thumb}>
+          <Image
+            source={{uri: this.props.playlist.image_url}}
             style={styles.fullThumbPic}
             />
         </View>
@@ -97,11 +107,23 @@ class PlaylistScreen extends React.Component {
     )
   }
 
+  deletePlayList(){
+    fetch(`http://www.beathub.us/api/playlists/${this.props.playlist.id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        this.goBack()
+      }).catch(function(error){
+        console.log(`Got an error: ${error}`)
+      })
+  }
+
 
 
   render() {
     let playlist = this.props.playlist
-    let songs = playlist ? this.renderSongs() : null;
+    let songs = playlist.songs.length ? this.renderSongs() : null;
     let thumb = playlist ? this.renderThumb(playlist.songs): null;
     return (
       <ScrollView style={styles.viewContainer}>
@@ -111,6 +133,16 @@ class PlaylistScreen extends React.Component {
         onPress={() => this.goBack()}>
         <Icon
           name="chevron-left"
+          size={20}
+          style={styles.itemIcon}
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.itemIconX}
+        onPress={() => this.deletePlayList()}>
+        <Icon
+          name="times"
           size={20}
           style={styles.itemIcon}
         />
@@ -218,6 +250,13 @@ const styles = StyleSheet.create({
   fullThumbPic: {
     width: 200,
     height: 200
+  },
+  itemIconX:{
+    zIndex: 20,
+    backgroundColor: "transparent",
+    position: "absolute",
+    top: 45,
+    right: 92
   }
 })
 

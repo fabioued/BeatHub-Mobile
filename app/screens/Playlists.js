@@ -13,11 +13,12 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import CreatePlaylistModal from '../components/CreatePlaylistModal'
 
 class PlaylistsScreen extends React.Component {
   constructor(props){
     super()
-    this.state = {playlists: null}
+    this.state = {playlists: null, playlistModalDisplay: false}
     this.goBack = this.goBack.bind(this);
     this.renderThumb = this.renderThumb.bind(this);
   }
@@ -54,7 +55,7 @@ class PlaylistsScreen extends React.Component {
 
   renderPlaylists(){
     let playlists = this.state.playlists.map((playlist, idx) => {
-      let thumb = this.renderThumb(playlist.songs)
+      let thumb = this.renderThumb(playlist)
       return (
         <TouchableOpacity
           style={styles.playlistItem}
@@ -75,12 +76,14 @@ class PlaylistsScreen extends React.Component {
     return (
       <View style={styles.playlistsContainer}>
         {playlists}
+
       </View>
     )
   }
 
 
-  renderThumb(songs){
+  renderThumb(playlist){
+    let songs = playlist.songs
     if (songs.length >= 4){
       let pic1 = songs[0].image_url;
       let pic2 = songs[1].image_url;
@@ -112,12 +115,21 @@ class PlaylistsScreen extends React.Component {
           </View>
         </View>
       )
-    } else {
+    } else  if (songs.length < 4 && songs.length > 0){
       let pic = songs[0].image_url;
       return(
         <View style={styles.thumb}>
           <Image
             source={{uri: pic}}
+            style={styles.fullThumbPic}
+            />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.thumb}>
+          <Image
+            source={{uri: playlist.image_url}}
             style={styles.fullThumbPic}
             />
         </View>
@@ -128,6 +140,9 @@ class PlaylistsScreen extends React.Component {
 
   render() {
     let playlists = this.state.playlists ? this.renderPlaylists() : this._renderLoading();
+    let createPlaylistModal = this.state.playlistModalDisplay ?
+    <CreatePlaylistModal display={true} currentUser={this.props.currentUser} playlistsContext={this}/> :
+    <CreatePlaylistModal display={false} currentUser={this.props.currentUser} playlistsContext={this}/>
     return (
       <ScrollView>
 
@@ -143,6 +158,14 @@ class PlaylistsScreen extends React.Component {
 
       <Text style={styles.title}>Playlists</Text>
         {playlists}
+
+      <TouchableOpacity
+        style={styles.createPlaylistBtn}
+        onPress={() => this.setState({playlistModalDisplay: true})}>
+        <Text style={styles.createPlaylistText}>CREATE PLAYLIST</Text>
+      </TouchableOpacity>
+
+      {createPlaylistModal}
       </ScrollView>
     );
   }
@@ -232,6 +255,24 @@ const styles = StyleSheet.create({
   fullThumbPic: {
     width: 50,
     height: 50
+  },
+  createPlaylistText: {
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "Helvetica",
+    fontSize: 17,
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  createPlaylistBtn: {
+    backgroundColor: '#07d159',
+    borderRadius: 50,
+    width: 230,
+    height: 40,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 50
   }
 })
 
