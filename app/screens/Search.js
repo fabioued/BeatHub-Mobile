@@ -38,7 +38,8 @@ class SearchScreen extends React.Component {
   _handleInput(text){
 
     window.context = this;
-    this.setState({searchInput: text, animating: true}, () => fetch(`http://www.beathub.us/api/search?query=${this.state.searchInput}`, {
+    this.setState({searchInput: text, animating: true},
+      () => fetch(`http://www.beathub.us/api/search?query=${this.state.searchInput}`, {
       method: "GET"
     })
     .then((response) => response.json())
