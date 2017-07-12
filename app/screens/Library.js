@@ -75,7 +75,9 @@ class LibraryScreen extends React.Component {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.musicItem}>
+        <TouchableOpacity
+          style={styles.musicItem}
+          onPress={() => this.props.changeTab('myArtists', null, 'push')}>
           <Icon2
             name="microphone"
             size={30}

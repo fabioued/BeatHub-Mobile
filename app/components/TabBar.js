@@ -19,6 +19,7 @@ import RadioScreen from '../screens/Radio'
 import LibraryScreen from '../screens/Library'
 import PlaylistsScreen from '../screens/Playlists'
 import PlaylistScreen from '../screens/Playlist'
+import MyArtistsScreen from '../screens/MyArtists'
 
 
 class TabBar extends React.Component {
@@ -153,6 +154,15 @@ class TabBar extends React.Component {
           changeTab={this.changeTab}
           currentUser={this.props.currentUser}
           playlist={this.state.tabProps}
+          _setAudioBar={this.props._setAudioBar}
+          />
+      )
+    } else if (this.state.tab === 'myArtists'){
+      return (
+        <MyArtistsScreen
+          navStack={this.state.navStack}
+          changeTab={this.changeTab}
+          currentUser={this.props.currentUser}
           _setAudioBar={this.props._setAudioBar}
           />
       )

@@ -243,14 +243,8 @@ class ArtistScreen extends React.Component {
           <Image
             ref={(img) => {this.backgroundImage = img; }}
             style={styles.banner}
-            source={{uri: artist.banner_url }}
+            source={{uri: artist.image_url }}
             onLoadEnd={this.imageLoaded.bind(this)}
-            />
-          <VibrancyView
-            blurType='light'
-            blurAmount={this.state.blurAmount}
-            style={styles.blur}
-            viewRef={this.state.viewRef}
             />
         </View>
 
